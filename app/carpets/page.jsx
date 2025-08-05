@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
-import { Heading } from '@/components/heading';
-import { Search } from '@/components/search';
-import { Field } from '@/components/fieldset';
-import { Select } from '@/components/select';
+import { Heading } from '@/components/catalyst/heading';
+import { Search } from '@/components/shared/search';
+import { Field } from '@/components/catalyst/fieldset';
+import { Select } from '@/components/catalyst/select';
 
 export const metadata = {
   title: 'Dywany',

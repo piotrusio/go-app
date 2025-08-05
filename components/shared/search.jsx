@@ -1,6 +1,6 @@
 'use client';
 
-import { Input, InputGroup } from '@/components/input'; // Assuming these exist
+import { Input, InputGroup } from '@/components/catalyst/input'; // Assuming these exist
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 

@@ -2,9 +2,9 @@
 
 import Image from 'next/image'
 
-import { Navbar, NavbarSection, NavbarSpacer } from '@/components/navbar'
-import { Sidebar, SidebarBody, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection } from '@/components/sidebar'
-import { SidebarLayout } from '@/components/sidebar-layout'
+import { Navbar, NavbarSection, NavbarSpacer } from '@/components/catalyst/navbar'
+import { Sidebar, SidebarBody, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection } from '@/components/catalyst/sidebar'
+import { SidebarLayout } from '@/components/catalyst/sidebar-layout'
 import { 
   DocumentTextIcon, MapIcon, RectangleGroupIcon, BuildingOfficeIcon, SwatchIcon,
   DocumentDuplicateIcon, Square3Stack3DIcon, TruckIcon, HomeIcon
