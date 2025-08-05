@@ -8,7 +8,6 @@ export function CursorPagination({ 'aria-label': ariaLabel = 'Page navigation', 
   return <nav aria-label={ariaLabel} {...props} className={clsx(className, 'flex gap-x-2')} />;
 }
 
-// Previous button for cursor pagination
 export function CursorPrevious({ 
   previousCursor = null, 
   disabled = false,
@@ -62,7 +61,6 @@ export function CursorPrevious({
   );
 }
 
-// Next button for cursor pagination
 export function CursorNext({ 
   nextCursor = null, 
   hasMore = false,
@@ -119,7 +117,6 @@ export function CursorNext({
   );
 }
 
-// Info display for current page status
 export function CursorInfo({ 
   currentCount = 0, 
   totalLoaded = 0,
@@ -143,7 +140,6 @@ export function CursorInfo({
   );
 }
 
-// Load More button - standalone component
 export function LoadMoreButton({ 
   hasMore = false,
   loading = false,
@@ -169,7 +165,6 @@ export function LoadMoreButton({
   );
 }
 
-// Combined Load More Pagination
 export function LoadMorePagination({
   hasMore = false,
   loading = false,
@@ -199,7 +194,6 @@ export function LoadMorePagination({
   );
 }
 
-// Full cursor pagination with Previous/Next
 export function FullCursorPagination({
   previousCursor = null,
   nextCursor = null,

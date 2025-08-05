@@ -249,7 +249,7 @@ export default async function CustomersPage({ searchParams }) {
             <CustomersEmpty query={query} salesArea={salesArea} />
           ) : (
             <CustomersListClient
-              initialCustomers={customersResult.data}
+              initialData={customersResult.data}
               initialNextCursor={customersResult.nextCursor}
               initialHasMore={customersResult.hasMore}
               searchParams={{ query, salesArea, sortOrder }}

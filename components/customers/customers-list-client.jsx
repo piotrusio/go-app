@@ -14,25 +14,25 @@ import { getMoreCustomers } from '@/actions/customer-actions';
 import { CustomersLoadMoreSkeleton } from '@/components/customers/customers-list-skeleton';
 
 export function CustomersListClient({ 
-  initialCustomers, 
+  initialData, 
   initialNextCursor, 
   initialHasMore,
   searchParams 
 }) {
-  const [customers, setCustomers] = useState(initialCustomers);
+  const [customers, setCustomers] = useState(initialData);
   const [nextCursor, setNextCursor] = useState(initialNextCursor);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setCustomers(initialCustomers);
+    setCustomers(initialData);
     setNextCursor(initialNextCursor);
     setHasMore(initialHasMore);
   }, [
     searchParams.query,     // Reset when search changes
     searchParams.salesArea, // Reset when filter changes
     searchParams.sortOrder, // Reset when sort changes
-    initialCustomers,       // Reset when server data changes
+    initialData,       // Reset when server data changes
     initialNextCursor,
     initialHasMore
   ]);
