@@ -1,6 +1,6 @@
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-import { AppLayout } from "@/components/app-layout";
+import { AppLayout } from "@/app/ui/app-layout";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
