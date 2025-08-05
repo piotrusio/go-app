@@ -1,5 +1,6 @@
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import { AppLayout } from "@/components/app-layout";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -17,10 +18,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pl">
-      <body
-        className={`${openSans.variable} font-sans antialiased`}
-      >
-        {children}
+      <body className={`${openSans.variable} font-sans antialiased`} suppressHydrationWarning>
+        <AppLayout>{children}</AppLayout>
       </body>
     </html>
   );
