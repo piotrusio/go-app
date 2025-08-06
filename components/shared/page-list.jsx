@@ -17,9 +17,21 @@ export function PageList({
   searchParams,
   itemLimit = 5,
   basePath,
-  className
+  className,
+  dataPropsMapping = {
+    data: 'initialData',
+    nextCursor: 'initialNextCursor', 
+    hasMore: 'initialHasMore'
+  }
 }) {
   const { query = '', sortOrder = 'asc', cursor = null, ...filterParams } = searchParams || {};
+
+  const clientProps = {
+    [dataPropsMapping.data]: data?.data || [],
+    [dataPropsMapping.nextCursor]: data?.nextCursor,
+    [dataPropsMapping.hasMore]: data?.hasMore,
+    searchParams
+  };
 
   return (
     <>
@@ -50,12 +62,7 @@ export function PageList({
               basePath={basePath}
             />
           ) : (
-            <ListClientComponent
-              initialCustomers={data?.data || []}
-              initialNextCursor={data?.nextCursor}
-              initialHasMore={data?.hasMore}
-              searchParams={searchParams}
-            />
+            <ListClientComponent {...clientProps} />
           )}
         </Suspense>
       </div>

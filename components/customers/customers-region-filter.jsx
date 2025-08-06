@@ -4,13 +4,15 @@ import { Field } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
-export function RegionFilter({ salesAreas, defaultValue = '' }) {
-  const searchParams = useSearchParams();
+export function RegionFilter({ searchParams, salesAreas = [] }) {
+  const urlSearchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+  
+  const currentValue = searchParams?.salesArea || '';
 
   const handleRegionChange = (value) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(urlSearchParams);
     
     // Reset to page 1 when filter changes
     params.set('page', '1');
@@ -30,7 +32,7 @@ export function RegionFilter({ salesAreas, defaultValue = '' }) {
         id="customerRegionSelect"
         name="salesArea"
         className="min-w-[200px]"
-        defaultValue={defaultValue}
+        value={currentValue}
         onChange={(e) => handleRegionChange(e.target.value)}
       >
         <option value="">
