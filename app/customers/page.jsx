@@ -1,7 +1,7 @@
 import { customersRepository } from '@/repositories/customer-repository';
 import { CustomersListClient } from '@/components/customers/customers-list-client';
 import { CustomersListSkeleton } from '@/components/customers/customers-list-skeleton';
-import CreateNewCustomer from '@/components/customers/customers-new-dialog';
+import { CustomersNewCard } from '@/components/customers/customers-new-card';
 import { PageList } from '@/components/shared/page-list';
 import { PageFilter } from '@/components/shared/page-filter';
 
@@ -77,7 +77,7 @@ export default async function CustomersPage({ searchParams }) {
       searchParamName="query"
       filters={filters}
       showSort={true}
-      createNewComponent={CreateNewCustomer}
+      createNewComponent={CustomersNewCard}
       listClientComponent={CustomersListClient}
       skeletonComponent={CustomersListSkeleton}
       data={customersResult}

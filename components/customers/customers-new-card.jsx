@@ -5,7 +5,7 @@ import { Button } from '@/components/catalyst/button'
 import { Dialog, DialogActions, DialogDescription, DialogTitle } from '@/components/catalyst/dialog'
 import { PlusIcon } from '@heroicons/react/16/solid'
 
-export default function CreateNewCustomer() {
+export function CustomersNewCard() {
   let [isOpen, setIsOpen] = useState(false)
 
   return (
