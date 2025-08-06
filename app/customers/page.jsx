@@ -1,7 +1,7 @@
 import { customersRepository } from '@/repositories/customer-repository';
 import { CustomersListClient } from '@/components/customers/customers-list-client';
 import { CustomersListSkeleton } from '@/components/customers/customers-list-skeleton';
-import { CustomersNewCard } from '@/components/customers/customers-new-card';
+import { CustomersNewCard } from '@/components/customers/customers-card-new';
 import { PageList } from '@/components/shared/page-list';
 import { PageFilter } from '@/components/shared/page-filter';
 
@@ -31,7 +31,7 @@ export default async function CustomersPage({ searchParams }) {
       customersRepository.getCustomers({
         search: query,
         salesArea: salesArea,
-        sortBy: 'customer_name',
+        sortBy: 'customer_code',
         sortOrder: sortOrder,
         cursor: cursor,
         limit: 5

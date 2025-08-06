@@ -46,7 +46,7 @@ export function CustomersListClient({
         cursor: nextCursor,
         search: searchParams.query || '',
         salesArea: searchParams.salesArea || '',
-        sortBy: 'customer_name',
+        sortBy: searchParams.sortBy || 'customer_code',
         sortOrder: searchParams.sortOrder || 'asc',
         limit: 5 // Keep same limit as initial load
       });
@@ -71,7 +71,7 @@ export function CustomersListClient({
           const avatarColorClasses = generateAvatarColorClasses(customer.customer_code);
 
           return (
-            <React.Fragment key={customer.customer_id}>
+            <React.Fragment key={`${customer.customer_id}-${index}`}>
               <li>
                 <Divider soft={index > 0} />
                 <div className="flex items-center justify-between py-4 md:py-6">
@@ -92,7 +92,7 @@ export function CustomersListClient({
                         </Link>
                       </div>
                       <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                        {truncateText(customer.company_name || customer.customer_name, 40)}
+                        {truncateText(customer.customer_name, 40)}
                       </div>
                       {(customer.address_street && customer.address_city) && (
                         <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
@@ -119,7 +119,7 @@ export function CustomersListClient({
         })}
       </ul>
 
-      {loading && <CustomersLoadMoreSkeleton itemCount={5} />}
+      {loading && <CustomersLoadMoreSkeleton itemCount={1} />}
 
       {hasMore && (
         <div className="mt-10">

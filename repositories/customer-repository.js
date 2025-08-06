@@ -1,5 +1,68 @@
-// repositories/customers-repository.js
 import { sql } from '@/lib/database/db';
+
+/**
+ * Builds an ORDER BY SQL clause with validation
+ * @param {string} sortBy - The field key to sort by (e.g., 'customer_name')
+ * @param {string} sortOrder - Sort direction, must be 'asc' or 'desc'
+ * @param {Array<string>} validSortFields - Array of allowed sort field keys
+ * @returns {string} ORDER BY clause string or empty string if validation fails
+ */
+function buildOrderByClause(sortBy, sortOrder, validSortFields) {
+  const validSortOrders = ['asc', 'desc'];
+  
+  if (!validSortFields.includes(sortBy) || !validSortOrders.includes(sortOrder)) {
+    return '';
+  }
+  
+  return `ORDER BY ${sortBy} ${sortOrder.toUpperCase()}`;
+}
+
+/**
+ * Builds WHERE clause with search and filter conditions
+ * @param {Object} conditions - Filter conditions
+ * @param {string} conditions.search - Search term
+ * @param {string} conditions.salesArea - Sales area filter
+ * @returns {string} WHERE clause or empty string
+ */
+function buildWhereClause({ search, salesArea }) {
+  const conditions = [];
+  
+  if (salesArea) {
+    conditions.push('c.customer_sales_area = $1');
+  }
+  
+  if (search) {
+    const searchCondition = `(
+      c.customer_code ILIKE $${salesArea ? 2 : 1} OR
+      c.customer_name ILIKE $${salesArea ? 2 : 1} OR
+      c.customer_sales_owner ILIKE $${salesArea ? 2 : 1} OR
+      c.customer_service_owner ILIKE $${salesArea ? 2 : 1}
+    )`;
+    conditions.push(searchCondition);
+  }
+  
+  return conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+}
+
+/**
+ * Builds cursor WHERE clause for pagination
+ * @param {number} cursor - Current cursor position
+ * @param {number} paramIndex - Parameter index for cursor value
+ * @returns {string} WHERE clause for cursor or empty string
+ */
+function buildCursorClause(cursor, paramIndex) {
+  return cursor ? `WHERE row_id > $${paramIndex}` : '';
+}
+
+/**
+ * Builds LIMIT clause
+ * @param {number} limit - Limit value
+ * @param {number} paramIndex - Parameter index for limit value
+ * @returns {string} LIMIT clause
+ */
+function buildLimitClause(limit, paramIndex) {
+  return `LIMIT $${paramIndex}`;
+}
 
 export class CustomersRepository {
   constructor() {
@@ -9,11 +72,11 @@ export class CustomersRepository {
   /**
    * Get customers with cursor-based pagination
    * @param {Object} params - Query parameters
-   * @param {number} [params.cursor] - Cursor for pagination (customer id)
+   * @param {number} [params.cursor] - Cursor for pagination (row number)
    * @param {number} [params.limit] - Number of items per page
    * @param {string} [params.search] - Search query across multiple fields
    * @param {string} [params.salesArea] - Filter by sales area
-   * @param {string} [params.sortBy] - Sort field: 'customer_name' or 'id'
+   * @param {string} [params.sortBy] - Sort field: 'customer_name', 'customer_code', or 'id'
    * @param {string} [params.sortOrder] - Sort direction: 'asc' or 'desc'
    * @returns {Promise<Object>} Paginated response with customers
    */
@@ -23,154 +86,71 @@ export class CustomersRepository {
       limit = this.defaultLimit, 
       search, 
       salesArea,
-      sortBy = 'customer_name',
+      sortBy = 'customer_code',
       sortOrder = 'asc'
     } = params;
     
     try {
-      // Use separate static queries to avoid parameter type detection issues
-      let result;
+      // Validate and build ORDER BY clause
+      const validSortFields = ['customer_code', 'customer_name', 'id'];
+      const orderByClause = buildOrderByClause(sortBy, sortOrder, validSortFields);
       
-      if (search && salesArea) {
-        // Both search and sales area filter
-        result = await sql`
-          SELECT 
-            c.id as customer_id,
-            c.customer_code,
-            c.customer_name as company_name,
-            c.customer_sales_area,
-            c.customer_sales_owner,
-            c.customer_service_owner,
-            c.customer_price_list,
-            c.customer_discount,
-            c.customer_status,
-            c.customer_tax_prefix,
-            c.customer_tax_number,
-            a.address_street,
-            a.address_country,
-            a.address_zip,
-            a.address_city,
-            a.address_district,
-            a.address_phone1,
-            a.address_phone2,
-            a.address_fax,
-            a.address_gsm,
-            a.address_email
-          FROM customers c
-          LEFT JOIN customer_addresses a ON c.id = a.customer_id AND a.address_type = 'AKTUALNY'
-          WHERE c.customer_sales_area = ${salesArea}
-          AND (
-            c.customer_code ILIKE ${'%' + search + '%'} OR
-            c.customer_name ILIKE ${'%' + search + '%'} OR
-            c.customer_sales_owner ILIKE ${'%' + search + '%'} OR
-            c.customer_service_owner ILIKE ${'%' + search + '%'}
-          )
-          ${cursor ? sql`AND c.id > ${cursor}` : sql``}
-          ORDER BY c.customer_name ${sortOrder === 'desc' ? sql`DESC` : sql`ASC`}, c.id ASC
-          LIMIT ${limit + 1}
-        `;
-      } else if (search) {
-        // Only search
-        result = await sql`
-          SELECT 
-            c.id as customer_id,
-            c.customer_code,
-            c.customer_name as company_name,
-            c.customer_sales_area,
-            c.customer_sales_owner,
-            c.customer_service_owner,
-            c.customer_price_list,
-            c.customer_discount,
-            c.customer_status,
-            c.customer_tax_prefix,
-            c.customer_tax_number,
-            a.address_street,
-            a.address_country,
-            a.address_zip,
-            a.address_city,
-            a.address_district,
-            a.address_phone1,
-            a.address_phone2,
-            a.address_fax,
-            a.address_gsm,
-            a.address_email
-          FROM customers c
-          LEFT JOIN customer_addresses a ON c.id = a.customer_id AND a.address_type = 'AKTUALNY'
-          WHERE (
-            c.customer_code ILIKE ${'%' + search + '%'} OR
-            c.customer_name ILIKE ${'%' + search + '%'} OR
-            c.customer_sales_owner ILIKE ${'%' + search + '%'} OR
-            c.customer_service_owner ILIKE ${'%' + search + '%'}
-          )
-          ${cursor ? sql`AND c.id > ${cursor}` : sql``}
-          ORDER BY c.customer_name ${sortOrder === 'desc' ? sql`DESC` : sql`ASC`}, c.id ASC
-          LIMIT ${limit + 1}
-        `;
-      } else if (salesArea) {
-        // Only sales area filter
-        result = await sql`
-          SELECT 
-            c.id as customer_id,
-            c.customer_code,
-            c.customer_name as company_name,
-            c.customer_sales_area,
-            c.customer_sales_owner,
-            c.customer_service_owner,
-            c.customer_price_list,
-            c.customer_discount,
-            c.customer_status,
-            c.customer_tax_prefix,
-            c.customer_tax_number,
-            a.address_street,
-            a.address_country,
-            a.address_zip,
-            a.address_city,
-            a.address_district,
-            a.address_phone1,
-            a.address_phone2,
-            a.address_fax,
-            a.address_gsm,
-            a.address_email
-          FROM customers c
-          LEFT JOIN customer_addresses a ON c.id = a.customer_id AND a.address_type = 'AKTUALNY'
-          WHERE c.customer_sales_area = ${salesArea}
-          ${cursor ? sql`AND c.id > ${cursor}` : sql``}
-          ORDER BY c.customer_name ${sortOrder === 'desc' ? sql`DESC` : sql`ASC`}, c.id ASC
-          LIMIT ${limit + 1}
-        `;
-      } else {
-        // No filters
-        result = await sql`
-          SELECT 
-            c.id as customer_id,
-            c.customer_code,
-            c.customer_name as company_name,
-            c.customer_sales_area,
-            c.customer_sales_owner,
-            c.customer_service_owner,
-            c.customer_price_list,
-            c.customer_discount,
-            c.customer_status,
-            c.customer_tax_prefix,
-            c.customer_tax_number,
-            a.address_street,
-            a.address_country,
-            a.address_zip,
-            a.address_city,
-            a.address_district,
-            a.address_phone1,
-            a.address_phone2,
-            a.address_fax,
-            a.address_gsm,
-            a.address_email
-          FROM customers c
-          LEFT JOIN customer_addresses a ON c.id = a.customer_id AND a.address_type = 'AKTUALNY'
-          ${cursor ? sql`WHERE c.id > ${cursor}` : sql``}
-          ORDER BY c.customer_name ${sortOrder === 'desc' ? sql`DESC` : sql`ASC`}, c.id ASC
-          LIMIT ${limit + 1}
-        `;
+      if (!orderByClause) {
+        throw new Error('Invalid sort parameters');
       }
       
+      // Build query parts
+      const whereClause = buildWhereClause({ search, salesArea });
+      
+      // Calculate parameter indices
+      let paramIndex = 1;
+      const queryParams = [];
+      
+      // Add parameters based on conditions
+      if (salesArea) {
+        queryParams.push(salesArea);
+        paramIndex++;
+      }
+      
+      if (search) {
+        queryParams.push(`%${search}%`);
+        paramIndex++;
+      }
+      
+      const cursorClause = buildCursorClause(cursor, cursor ? paramIndex : null);
+      if (cursor) {
+        queryParams.push(cursor);
+        paramIndex++;
+      }
+      
+      const limitClause = buildLimitClause(limit + 1, paramIndex);
+      queryParams.push(limit + 1);
+      
+      // Build complete query
+      const query = `
+        WITH paginated AS (
+          SELECT ROW_NUMBER() OVER(${orderByClause}) as row_id, 
+                 c.id as customer_id,
+                 customer_code, customer_name, customer_sales_area, customer_sales_owner, customer_service_owner,
+                 customer_price_list, customer_discount, customer_status, customer_tax_prefix, customer_tax_number,
+                 address_street, address_country, address_zip, address_city, address_district,
+                 address_phone1, address_phone2, address_fax, address_gsm, address_email
+          FROM customers c
+          LEFT JOIN customer_addresses a ON c.id = a.customer_id AND address_type = 'AKTUALNY' 
+          ${whereClause}
+        )
+        SELECT
+          row_id, customer_id, customer_code, customer_name, customer_sales_area, customer_sales_owner,
+          customer_service_owner, customer_price_list, customer_discount, customer_status, customer_tax_prefix,
+          customer_tax_number, address_street, address_country, address_zip, address_city,
+          address_district, address_phone1, address_phone2, address_fax, address_gsm, address_email
+        FROM paginated
+        ${cursorClause}
+        ORDER BY row_id 
+        ${limitClause}
+      `;
+      
+      const result = await sql.unsafe(query, queryParams);
       const customers = Array.from(result);
       
       // Check if there are more records
@@ -179,9 +159,9 @@ export class CustomersRepository {
         customers.pop(); // Remove the extra record
       }
       
-      // Get next cursor
+      // Get next cursor (use row_id instead of customer_id)
       const nextCursor = customers.length > 0 
-        ? customers[customers.length - 1].customer_id 
+        ? customers[customers.length - 1].row_id 
         : null;
       
       return {
@@ -226,27 +206,10 @@ export class CustomersRepository {
     try {
       const result = await sql`
         SELECT 
-          c.id as customer_id,
-          c.customer_code,
-          c.customer_name as company_name,
-          c.customer_sales_area,
-          c.customer_sales_owner,
-          c.customer_service_owner,
-          c.customer_price_list,
-          c.customer_discount,
-          c.customer_status,
-          c.customer_tax_prefix,
-          c.customer_tax_number,
-          a.address_street,
-          a.address_country,
-          a.address_zip,
-          a.address_city,
-          a.address_district,
-          a.address_phone1,
-          a.address_phone2,
-          a.address_fax,
-          a.address_gsm,
-          a.address_email
+          c.id as customer_id, customer_code, customer_name, customer_sales_area, customer_sales_owner,
+          customer_service_owner, customer_price_list, customer_discount, customer_status, customer_tax_prefix,
+          customer_tax_number, address_street, address_country, address_zip, address_city,
+          address_district, address_phone1, address_phone2, address_fax, address_gsm, address_email
         FROM customers c
         LEFT JOIN customer_addresses a ON c.id = a.customer_id AND a.address_type = 'AKTUALNY'
         WHERE c.id = ${id}
