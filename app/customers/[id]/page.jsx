@@ -8,7 +8,13 @@ import { ChevronLeftIcon, PhoneIcon, EnvelopeIcon} from '@heroicons/react/16/sol
 import { getInitials, generateAvatarColorClasses } from '@/lib/utils/avatars';
 import { customersRepository } from '@/repositories/customer-repository';
 import { truncateText } from '@/lib/utils/text';
-import CustomerCardEdit from '@/components/customers/customers-card-edit';
+import { CustomersCardSectionService } from '@/components/customers/customers-card-section-service';
+import { CustomersCardSectionContacts } from '@/components/customers/customers-card-section-contacts';
+import { CustomersCardSectionNotes } from '@/components/customers/customers-card-section-notes';
+import { CustomersCardSectionLimits } from '@/components/customers/customers-card-section-limits';
+import { CustomersCardSectionTerms } from '@/components/customers/customers-card-section-terms';
+import { CustomersCardSectionAddress } from '@/components/customers/customers-card-section-address';
+import { OrdersCardNew } from '@/components/orders/orders-card-new';
 
 export default async function CustomerCard({ params, searchParams }) {
   const paramsResolved = await Promise.resolve(params);
@@ -62,9 +68,28 @@ export default async function CustomerCard({ params, searchParams }) {
             </div>
           </div>
         </div>
-        <CustomerCardEdit />
+        <OrdersCardNew />
       </div>
       <Divider className="mt-6" />
+      
+      {/* --- Customer Service Section --- */}
+      <CustomersCardSectionService customer = {customer}/>
+
+      {/* --- Customer Notes Section --- */}
+      <CustomersCardSectionNotes />
+
+      {/* --- Commercial Terms Section --- */}
+      <CustomersCardSectionTerms />
+
+      {/* --- Customer Limits Section --- */}
+      <CustomersCardSectionLimits />
+
+      {/* --- Customer Contacts Section --- */}
+      <CustomersCardSectionContacts />
+
+      {/* --- Addresses Section --- */}
+      <CustomersCardSectionAddress />
+
     </>
   )
 }
