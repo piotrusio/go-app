@@ -1,9 +1,9 @@
 import { customersRepository } from '@/repositories/customer-repository';
-import { RegionFilter } from '@/components/customers/customers-region-filter';
 import { CustomersListClient } from '@/components/customers/customers-list-client';
 import { CustomersListSkeleton } from '@/components/customers/customers-list-skeleton';
 import CreateNewCustomer from '@/components/customers/customers-new-dialog';
 import { PageList } from '@/components/shared/page-list';
+import { PageFilter } from '@/components/shared/page-filter';
 
 export const metadata = {
   title: 'Klienci',
@@ -59,7 +59,15 @@ export default async function CustomersPage({ searchParams }) {
 
   // Create filter components with salesAreas data
   const filters = [
-    (props) => <RegionFilter {...props} salesAreas={salesAreas} />
+    (props) => (
+      <PageFilter
+        {...props}
+        data={salesAreas}
+        paramName="salesArea"
+        allOptionsLabel="Wszystkie regiony"
+        className="min-w-[200px]"
+      />
+    )
   ];
 
   return (
