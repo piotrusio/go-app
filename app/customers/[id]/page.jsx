@@ -12,7 +12,7 @@ import { truncateText } from '@/lib/utils/text';
 import { CustomersCardSectionService } from '@/components/customers/customers-card-section-service';
 import { CustomersCardSectionContacts } from '@/components/customers/customers-card-section-contacts';
 import { CustomersCardSectionNotes } from '@/components/customers/customers-card-section-notes';
-import { CustomersCardSectionLimits } from '@/components/customers/customers-card-section-limits';
+import { CustomersCardSectionCredits } from '@/components/customers/customers-card-section-credits';
 import { CustomersCardSectionTerms } from '@/components/customers/customers-card-section-terms';
 import { CustomersCardSectionAddress } from '@/components/customers/customers-card-section-address';
 import { OrdersCardNew } from '@/components/orders/orders-card-new';
@@ -83,10 +83,10 @@ export default async function CustomerCard({ params, searchParams }) {
       <CustomersCardSectionTerms />
 
       {/* --- Customer Limits Section --- */}
-      <CustomersCardSectionLimits />
+      <CustomersCardSectionCredits credits={customer.customer_credits} id = {customer.customer_id}/>
 
       {/* --- Customer Contacts Section --- */}
-      <CustomersCardSectionContacts />
+      <CustomersCardSectionContacts contacts={customer.customer_contacts} id = {customer.customer_id}/>
 
       {/* --- Addresses Section --- */}
       <CustomersCardSectionAddress addresses={customer.customer_addresses} id = {customer.customer_id}/>
