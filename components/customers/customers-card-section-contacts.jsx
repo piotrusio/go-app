@@ -24,9 +24,9 @@ export function CustomersCardSectionContacts({ contacts = [], customerId }) {
             <li key={index}>
               <Divider soft={index > 0} />
               <div className="flex items-center justify-between py-4 md:py-4">
-                <div className="flex flex-1 items-start gap-4 md:gap-6">
+                <div className="flex flex-1 items-start gap-4">
                 <div className="flex-shrink-0">
-                  <IdentificationIcon className="size-8 text-zinc-500 dark:text-zinc-400" aria-hidden="true"/>
+                  <IdentificationIcon className="size-12 text-zinc-500 dark:text-zinc-400" aria-hidden="true"/>
                 </div>
                   <div className="space-y-1">
                     <div className="text-sm">

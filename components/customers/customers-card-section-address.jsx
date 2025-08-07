@@ -24,10 +24,10 @@ export function CustomersCardSectionAddress({ addresses = [], customerId }) {
             <li key={index}>
               <Divider soft={index > 0} />
               <div className="flex items-center justify-between py-4 md:py-4">
-                <div className="flex flex-1 items-start gap-4 md:gap-6">
-                <div className="flex-shrink-0">
-                    <MapPinIcon className="size-8 text-zinc-500 dark:text-zinc-400" aria-hidden="true"/>
-                </div>
+                <div className="flex flex-1 items-start gap-4">
+                  <div className="flex-shrink-0">
+                      <MapPinIcon className="size-12 text-zinc-500 dark:text-zinc-400" aria-hidden="true"/>
+                  </div>
                   <div className="space-y-1">
                     <div className="text-sm">
                       {address.address_street}, {address.address_zip} {address.address_city}, {address.address_country}
