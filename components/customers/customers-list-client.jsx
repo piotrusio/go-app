@@ -94,9 +94,9 @@ export function CustomersListClient({
                       <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
                         {truncateText(customer.customer_name, 40)}
                       </div>
-                      {(customer.address_street && customer.address_city) && (
+                      {(customer.customer_address_street && customer.customer_address_city) && (
                         <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                          {customer.address_street}, {customer.address_zip} {customer.address_city}, {customer.address_country}
+                          {customer.customer_address_street}, {customer.customer_address_zip} {customer.customer_address_city}, {customer.customer_address_country}
                         </div>
                       )}
                       <div className="flex flex-wrap gap-2 pt-1">

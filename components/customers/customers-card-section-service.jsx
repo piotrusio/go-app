@@ -20,14 +20,14 @@ export function CustomersCardSectionService({ customer }) {
         <DescriptionDetails>{customer.customer_sales_owner || 'N/D'}</DescriptionDetails>
         <DescriptionTerm>Opiekun BOK</DescriptionTerm>
         <DescriptionDetails>{customer.customer_service_owner || 'N/D'}</DescriptionDetails>
-        <DescriptionTerm>Metoda Płatności</DescriptionTerm>
-        <DescriptionDetails>N/D</DescriptionDetails>
+        <DescriptionTerm>Termin Płatności</DescriptionTerm>
+        <DescriptionDetails>{customer.customer_payment_terms ? `${customer.customer_payment_terms} dni` : '0 dni'}</DescriptionDetails>
         <DescriptionTerm>Numer NIP</DescriptionTerm>
         <DescriptionDetails>
             {customer.customer_tax_prefix && customer.customer_tax_number ? `${customer.customer_tax_prefix}-${customer.customer_tax_number}` : 'N/D'}
         </DescriptionDetails>
         <DescriptionTerm>Rabat Bazowy</DescriptionTerm>
-        <DescriptionDetails>{customer.customer_discount ? `${customer.customer_discount}%` : 'N/D'}</DescriptionDetails>
+        <DescriptionDetails>{customer.customer_discount ? `${customer.customer_discount} %` : '0.00 %'}</DescriptionDetails>
         <DescriptionTerm>Cennik Główny</DescriptionTerm>
         <DescriptionDetails>{customer.customer_price_list || 'N/D'}</DescriptionDetails>
       </DescriptionList>

@@ -28,20 +28,20 @@ function buildWhereClause({ search, salesArea }) {
   const conditions = [];
   
   if (salesArea) {
-    conditions.push('c.customer_sales_area = $1');
+    conditions.push('customer_sales_area = $1');
   }
   
   if (search) {
     const searchCondition = `(
-      c.customer_code ILIKE $${salesArea ? 2 : 1} OR
-      c.customer_name ILIKE $${salesArea ? 2 : 1} OR
-      c.customer_sales_owner ILIKE $${salesArea ? 2 : 1} OR
-      c.customer_service_owner ILIKE $${salesArea ? 2 : 1}
+      customer_code ILIKE $${salesArea ? 2 : 1} OR
+      customer_name ILIKE $${salesArea ? 2 : 1} OR
+      customer_sales_owner ILIKE $${salesArea ? 2 : 1} OR
+      customer_service_owner ILIKE $${salesArea ? 2 : 1}
     )`;
     conditions.push(searchCondition);
   }
   
-  return conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  return conditions.length > 0 ? `WHERE status = TRUE AND ${conditions.join(' AND ')}` : 'WHERE status = TRUE';
 }
 
 /**
@@ -130,20 +130,16 @@ export class CustomersRepository {
       const query = `
         WITH paginated AS (
           SELECT ROW_NUMBER() OVER(${orderByClause}) as row_id, 
-                 c.id as customer_id,
-                 customer_code, customer_name, customer_sales_area, customer_sales_owner, customer_service_owner,
-                 customer_price_list, customer_discount, customer_status, customer_tax_prefix, customer_tax_number,
-                 address_street, address_country, address_zip, address_city, address_district,
-                 address_phone1, address_phone2, address_fax, address_gsm, address_email
-          FROM customers c
-          LEFT JOIN customer_addresses a ON c.id = a.customer_id AND address_type = 'AKTUALNY' 
+                 id as customer_id, customer_code, customer_name, customer_sales_area,
+                 customer_sales_owner, customer_service_owner, customer_address_street,
+                 customer_address_country, customer_address_zip, customer_address_city
+          FROM customers
           ${whereClause}
         )
         SELECT
-          row_id, customer_id, customer_code, customer_name, customer_sales_area, customer_sales_owner,
-          customer_service_owner, customer_price_list, customer_discount, customer_status, customer_tax_prefix,
-          customer_tax_number, address_street, address_country, address_zip, address_city,
-          address_district, address_phone1, address_phone2, address_fax, address_gsm, address_email
+          row_id, customer_id, customer_code, customer_name, customer_sales_area,
+          customer_sales_owner, customer_service_owner, customer_address_street,
+          customer_address_country, customer_address_zip, customer_address_city
         FROM paginated
         ${cursorClause}
         ORDER BY row_id 
@@ -186,7 +182,7 @@ export class CustomersRepository {
         SELECT DISTINCT customer_sales_area
         FROM customers
         WHERE customer_sales_area IS NOT NULL 
-        AND customer_sales_area <> ''
+        AND customer_sales_area <> '' AND status = TRUE
         ORDER BY customer_sales_area ASC
       `;
       
@@ -206,13 +202,14 @@ export class CustomersRepository {
     try {
       const result = await sql`
         SELECT 
-          c.id as customer_id, customer_code, customer_name, customer_sales_area, customer_sales_owner,
-          customer_service_owner, customer_price_list, customer_discount, customer_status, customer_tax_prefix,
-          customer_tax_number, address_street, address_country, address_zip, address_city,
-          address_district, address_phone1, address_phone2, address_fax, address_gsm, address_email
-        FROM customers c
-        LEFT JOIN customer_addresses a ON c.id = a.customer_id AND a.address_type = 'AKTUALNY'
-        WHERE c.id = ${id}
+          id as customer_id,
+          customer_code, customer_name, customer_sales_area, customer_sales_owner,
+          customer_service_owner, customer_price_list, customer_discount, customer_payment_terms,
+          customer_tax_prefix, customer_tax_number, customer_address_street,
+          customer_address_country, customer_address_zip, customer_address_city,
+          customer_phone_number, customer_fax_number, customer_email
+        FROM customers
+        WHERE id = ${id} AND status = TRUE
         LIMIT 1
       `;
       
@@ -230,13 +227,11 @@ export class CustomersRepository {
   async getCustomersCodes() {
     try {
       const result = await sql`
-        SELECT 
-          c.id as customer_id,
-          c.customer_code
-        FROM customers c
-        WHERE c.customer_code IS NOT NULL 
-        AND c.customer_code <> ''
-        ORDER BY c.customer_code ASC
+        SELECT id as customer_id, customer_code
+        FROM customers
+        WHERE customer_code IS NOT NULL 
+        AND customer_code <> ''
+        ORDER BY customer_code ASC
       `;
       
       return Array.from(result);

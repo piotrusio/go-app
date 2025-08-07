@@ -1,7 +1,7 @@
 import { customersRepository } from '@/repositories/customer-repository';
 import { CustomersListClient } from '@/components/customers/customers-list-client';
 import { CustomersListSkeleton } from '@/components/customers/customers-list-skeleton';
-import { CustomersNewCard } from '@/components/customers/customers-card-new';
+import { CustomersCardNew } from '@/components/customers/customers-card-new';
 import { PageList } from '@/components/shared/page-list';
 import { PageFilter } from '@/components/shared/page-filter';
 
@@ -64,7 +64,7 @@ export default async function CustomersPage({ searchParams }) {
         {...props}
         data={salesAreas}
         paramName="salesArea"
-        allOptionsLabel="Wszystkie regiony"
+        allOptionsLabel="Regiony"
         className="min-w-[200px]"
       />
     )
@@ -77,7 +77,7 @@ export default async function CustomersPage({ searchParams }) {
       searchParamName="query"
       filters={filters}
       showSort={true}
-      createNewComponent={CustomersNewCard}
+      createNewComponent={CustomersCardNew}
       listClientComponent={CustomersListClient}
       skeletonComponent={CustomersListSkeleton}
       data={customersResult}
