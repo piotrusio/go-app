@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 
 import { Avatar } from '@/components/catalyst/avatar';
+import { Badge } from '@/components/catalyst/badge';
 import { Divider } from '@/components/catalyst/divider';
 import { Link } from '@/components/catalyst/link';
 import { Heading } from '@/components/catalyst/heading';
@@ -56,15 +57,15 @@ export default async function CustomerCard({ params, searchParams }) {
             <div className="text-sm/6 text-zinc-500 dark:text-zinc-400">
               {truncateText(customer.customer_name, 70)}
             </div>
-            {(customer.address_street && customer.address_city) && (
+            {(customer.customer_address_street && customer.customer_address_city) && (
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                {customer.address_street}, {customer.address_zip} {customer.address_city}, {customer.address_country}
+                {customer.customer_address_street}, {customer.customer_address_zip} {customer.customer_address_city}, {customer.customer_address_country}
               </div>
             )}
             <div className="flex flex-wrap gap-2 pt-1">
-              {customer.phone1 && <Badge color="lime"> <PhoneIcon className="size-4" /> {customer.phone1}</Badge>}
-              {customer.phone2 && <Badge color="lime"> <PhoneIcon className="size-4" /> {customer.phone2}</Badge>}
-              {customer.email && <Badge color="lime"> <EnvelopeIcon className="size-4" /> {customer.email}</Badge>}
+              {customer.customer_phone_number && <Badge color="lime"> <PhoneIcon className="size-4" /> {customer.customer_phone_number}</Badge>}
+              {customer.customer_fax_number && <Badge color="lime"> <PhoneIcon className="size-4" /> {customer.customer_phone_number}</Badge>}
+              {customer.customer_email && <Badge color="lime"> <EnvelopeIcon className="size-4" /> {customer.customer_email}</Badge>}
             </div>
           </div>
         </div>
@@ -88,7 +89,7 @@ export default async function CustomerCard({ params, searchParams }) {
       <CustomersCardSectionContacts />
 
       {/* --- Addresses Section --- */}
-      <CustomersCardSectionAddress />
+      <CustomersCardSectionAddress addresses={customer.customer_addresses} id = {customer.customer_id}/>
 
     </>
   )

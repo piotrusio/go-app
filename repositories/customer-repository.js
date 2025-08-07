@@ -207,7 +207,7 @@ export class CustomersRepository {
           customer_service_owner, customer_price_list, customer_discount, customer_payment_terms,
           customer_tax_prefix, customer_tax_number, customer_address_street,
           customer_address_country, customer_address_zip, customer_address_city,
-          customer_phone_number, customer_fax_number, customer_email
+          customer_phone_number, customer_fax_number, customer_email, customer_addresses
         FROM customers
         WHERE id = ${id} AND status = TRUE
         LIMIT 1
