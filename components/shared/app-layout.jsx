@@ -60,7 +60,7 @@ export function AppLayout({ children }) {
               </SidebarItem>
             </SidebarSection>
             <SidebarSection>
-              <SidebarHeading>Sprzedaz</SidebarHeading>
+              <SidebarHeading>Sprzedaż</SidebarHeading>
               <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
                 <DocumentDuplicateIcon />
                 <SidebarLabel>Zamówienia</SidebarLabel>

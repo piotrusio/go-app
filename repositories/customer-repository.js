@@ -222,6 +222,29 @@ export class CustomersRepository {
       throw new Error(`Failed to fetch customer: ${error.message}`);
     }
   }
+
+    /**
+   * Get customer codes with IDs for dropdowns/selects
+   * @returns {Promise<Array<Object>>} Array of objects with customer_id and customer_code
+   */
+  async getCustomersCodes() {
+    try {
+      const result = await sql`
+        SELECT 
+          c.id as customer_id,
+          c.customer_code
+        FROM customers c
+        WHERE c.customer_code IS NOT NULL 
+        AND c.customer_code <> ''
+        ORDER BY c.customer_code ASC
+      `;
+      
+      return Array.from(result);
+    } catch (error) {
+      console.error('Database Error fetching customer codes:', error);
+      throw new Error(`Failed to fetch customer codes: ${error.message}`);
+    }
+  }
 }
 
 // Export singleton instance
