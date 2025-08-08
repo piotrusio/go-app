@@ -12,7 +12,7 @@ export default function CustomerCardEdit() {
     <>
       <Button outline type="button" onClick={() => setIsOpen(true)}>
         <PencilSquareIcon className="size-5" />
-        <span className="sm:inline ml-2">Edytuj</span>
+        {/* <span className="sm:inline ml-2">Edytuj</span> */}
       </Button>
       <Dialog open={isOpen} onClose={setIsOpen}>
         <DialogTitle>Edycja Klienta</DialogTitle>

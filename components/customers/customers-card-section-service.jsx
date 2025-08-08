@@ -2,6 +2,7 @@
 
 import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
+import { CardOverlay } from '../shared/card-overlay';
 import CustomerCardEdit from '@/components/customers/customers-card-edit';
 
 export function CustomersCardSectionService({ customer }) {
@@ -11,6 +12,7 @@ export function CustomersCardSectionService({ customer }) {
           <Subheading className="mt-16">Obsługa Handlowa</Subheading>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <CustomerCardEdit />
+          <CardOverlay />
         </div>
       </div>
       <DescriptionList className="mt-6">

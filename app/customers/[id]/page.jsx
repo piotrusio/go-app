@@ -16,7 +16,8 @@ import { CustomersCardSectionCredits } from '@/components/customers/customers-ca
 import { CustomersCardSectionTerms } from '@/components/customers/customers-card-section-terms';
 import { CustomersCardSectionAddress } from '@/components/customers/customers-card-section-address';
 import { OrdersCardNew } from '@/components/orders/orders-card-new';
-
+import { CardOverlay } from '@/components/shared/card-overlay';
+ 
 export default async function CustomerCard({ params, searchParams }) {
   const paramsResolved = await Promise.resolve(params);
   const searchparamsResolved = await Promise.resolve(searchParams);
